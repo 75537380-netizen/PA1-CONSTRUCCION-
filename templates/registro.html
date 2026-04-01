@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block titulo %}Crear Cuenta{% endblock %}
+{% block contenido %}
+<div class="auth-surface">
+    <div class="text-center mb-4">
+        <i class="bi bi-person-plus display-5 mb-2 d-block" style="color:var(--accent-2);"></i>
+        <h4 class="mb-1">Crear Cuenta</h4>
+        <p class="text-muted" style="font-size:0.85rem;">Registrate para empezar a gestionar tus tareas</p>
+    </div>
+
+    <form method="POST" class="vstack gap-3">
+        <div>
+            <label class="form-label">Nombre de usuario</label>
+            <input type="text" name="nombre_usuario" class="form-control" required autofocus autocomplete="username" />
+        </div>
+        <div>
+            <label class="form-label">Contrasena <span class="text-muted fw-normal">(min. 6 caracteres)</span></label>
+            <input type="password" name="contrasena" class="form-control" required minlength="6" autocomplete="new-password" />
+        </div>
+        <div>
+            <label class="form-label">Confirmar contrasena</label>
+            <input type="password" name="confirmar_contrasena" class="form-control" required autocomplete="new-password" />
+        </div>
+        <button type="submit" class="btn btn-primary w-100 py-2 mt-1">
+            Crear cuenta
+        </button>
+    </form>
+
+    <hr style="border-color:var(--line-soft);margin:1.5rem 0;">
+    <p class="text-center text-muted mb-0" style="font-size:0.85rem;">
+        Ya tienes cuenta? <a href="{{ url_for('login') }}">Inicia sesion</a>
+    </p>
+</div>
+{% endblock %}

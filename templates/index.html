@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+{% block titulo %}Mis Tareas{% endblock %}
+{% block contenido %}
+<div class="main-surface">
+
+    {# ── Cabecera ── #}
+    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4">
+        <div>
+            <div class="section-kicker mb-1">Panel Diario</div>
+            <h2 class="mb-0">Mis Tareas</h2>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{{ url_for('exportar_pdf') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-file-earmark-pdf me-1"></i>PDF
+            </a>
+            <button type="button" class="btn btn-primary px-4" id="abrirNuevaTarea">
+                <i class="bi bi-plus-lg me-1"></i>Nueva Tarea
+            </button>
+        </div>
+    </div>
+
+    {# ── Filtros ── #}
+    <div class="d-flex gap-2 flex-wrap mb-4">
+        <a href="{{ url_for('index') }}"
+           class="btn btn-sm {% if not filtro_activo %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+            Todas
+        </a>
+        <a href="{{ url_for('index', estado='pendiente') }}"
+           class="btn btn-sm {% if filtro_activo == 'pendiente' %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+            <i class="bi bi-hourglass-split me-1"></i>Pendientes
+        </a>
+        <a href="{{ url_for('index', estado='completada') }}"
+           class="btn btn-sm {% if filtro_activo == 'completada' %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+            <i class="bi bi-check2 me-1"></i>Completadas
+        </a>
+    </div>
+
+    {# ── Buscador ── #}
+    <div class="mb-3">
+        <div class="position-relative">
+            <i class="bi bi-search position-absolute" style="left:14px;top:50%;transform:translateY(-50%);color:var(--text-soft);font-size:0.85rem;pointer-events:none;"></i>
+            <input type="text" id="buscadorTareas" class="form-control ps-5"
+                   placeholder="Buscar tarea..." autocomplete="off"
+                   style="border-radius:12px;background:rgba(9,14,28,0.7);" />
+        </div>
+    </div>
+
+    {# ── Lista de tareas ── #}
+    {% if tareas %}
+    <div class="task-list mb-3">
+        {% for tarea in tareas %}
+        <div class="task-row d-flex align-items-start gap-3 py-3 px-1 {% if tarea.completada %}completada{% endif %}" data-id="{{ tarea.id }}">
+
+            {# Drag handle #}
+            <div class="drag-handle me-1 text-muted" style="cursor:grab;font-size:1rem;flex-shrink:0;align-self:center;">
+                <i class="bi bi-grip-vertical"></i>
+            </div>
+
+            {# Barra de prioridad #}
+            <div class="priority-bar {{ tarea.prioridad }} mt-1"></div>
+
+            {# Contenido principal #}
+            <div class="flex-grow-1 min-width-0">
+                <div class="task-title fw-semibold lh-sm mb-1">{{ tarea.titulo }}</div>
+
+                {% if tarea.descripcion %}
+                <div class="text-muted small mb-2" style="font-size:0.8rem;">
+                    {{ tarea.descripcion[:90] }}{% if tarea.descripcion|length > 90 %}…{% endif %}
+                </div>
+                {% endif %}
+
+                {# Meta badges #}
+                <div class="d-flex flex-wrap gap-2 align-items-center">
+                    {# Categoria #}
+                    {% if tarea.nombre_categoria %}
+                    <span class="badge rounded-pill" style="background:{{ tarea.color_categoria }}22;color:{{ tarea.color_categoria }};border:1px solid {{ tarea.color_categoria }}55;font-size:0.72rem;">
+                        <i class="bi bi-circle-fill me-1" style="font-size:0.45rem;vertical-align:middle;"></i>{{ tarea.nombre_categoria }}
+                    </span>
+                    {% endif %}
+
+                    {# Prioridad #}
+                    {% if tarea.prioridad == 'alta' %}
+                    <span class="badge" style="background:rgba(239,68,68,0.15);color:#f87171;font-size:0.7rem;">Alta</span>
+                    {% elif tarea.prioridad == 'media' %}
+                    <span class="badge" style="background:rgba(245,158,11,0.15);color:#fbbf24;font-size:0.7rem;">Media</span>
+                    {% else %}
+                    <span class="badge" style="background:rgba(34,197,94,0.15);color:#4ade80;font-size:0.7rem;">Baja</span>
+                    {% endif %}
+
+                    {# Deadline #}
+                    {% if tarea.fecha_limite %}
+                        {% if tarea.estado_deadline == 'vencida' %}
+                        <span class="badge badge-vencida" style="background:rgba(239,68,68,0.18);color:#f87171;font-size:0.7rem;">
+                            <i class="bi bi-exclamation-triangle me-1"></i>{{ tarea.fecha_limite.strftime('%d/%m/%Y') }} Vencida
+                        </span>
+                        {% elif tarea.estado_deadline == 'pronto' %}
+                        <span class="badge" style="background:rgba(245,158,11,0.18);color:#fbbf24;font-size:0.7rem;">
+                            <i class="bi bi-clock me-1"></i>{{ tarea.fecha_limite.strftime('%d/%m/%Y') }}
+                        </span>
+                        {% else %}
+                        <span style="font-size:0.75rem;color:var(--text-soft);">
+                            <i class="bi bi-calendar3 me-1"></i>{{ tarea.fecha_limite.strftime('%d/%m/%Y') }}
+                        </span>
+                        {% endif %}
+                    {% endif %}
+
+                    {# Estado #}
+                    {% if tarea.completada %}
+                    <span class="badge" style="background:rgba(34,197,94,0.12);color:#4ade80;font-size:0.7rem;">
+                        <i class="bi bi-check2 me-1"></i>Completada
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+
+            {# Acciones #}
+            <div class="d-flex gap-1 flex-shrink-0 align-items-center">
+                <form method="POST" action="{{ url_for('toggle_estado', tarea_id=tarea.id) }}">
+                    <button type="submit"
+                        class="btn btn-sm {% if tarea.completada %}btn-outline-secondary{% else %}btn-outline-success{% endif %}"
+                        title="{{ 'Marcar pendiente' if tarea.completada else 'Marcar completada' }}">
+                        <i class="bi {% if tarea.completada %}bi-arrow-counterclockwise{% else %}bi-check-lg{% endif %}"></i>
+                    </button>
+                </form>
+                <a href="{{ url_for('editar_tarea', tarea_id=tarea.id) }}" class="btn btn-sm btn-outline-primary" title="Editar">
+                    <i class="bi bi-pencil"></i>
+                </a>
+                <form method="POST" action="{{ url_for('eliminar_tarea', tarea_id=tarea.id) }}"
+                      onsubmit="return confirm('Eliminar: {{ tarea.titulo }}?')">
+                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </form>
+            </div>
+
+        </div>
+        {% endfor %}
+    </div>
+    <p class="text-muted" style="font-size:0.78rem;">
+        {{ tareas|length }} tarea{{ 's' if tareas|length != 1 else '' }}{% if filtro_activo %} &mdash; filtro: {{ filtro_activo }}{% endif %}
+    </p>
+
+    {% else %}
+    <div class="card border-dashed text-center py-5 mb-4">
+        <div class="card-body">
+            <i class="bi bi-journal-check display-3 d-block mb-3 text-muted opacity-50"></i>
+            <p class="mb-3 text-muted">
+                {% if filtro_activo %}No hay tareas {{ filtro_activo }}s.
+                {% else %}No tienes tareas aun.{% endif %}
+            </p>
+            <button type="button" class="btn btn-primary" id="abrirNuevaTareaVacio">
+                <i class="bi bi-plus-lg me-1"></i>Crear una tarea
+            </button>
+        </div>
+    </div>
+    {% endif %}
+
+    {# ── Horario Base ── #}
+    <div class="border-top mt-4 pt-4" style="border-color: var(--line-soft) !important;">
+        <div class="d-flex align-items-center justify-content-between mb-1">
+            <div class="section-kicker">Horario Base</div>
+            <span class="text-muted" style="font-size:0.75rem;">La IA lo usa para sugerir huecos en tu semana</span>
+        </div>
+        <form method="POST" action="{{ url_for('guardar_horario') }}" class="vstack gap-3 mt-3">
+            <div>
+                <label class="form-label">Tu horario semanal</label>
+                <textarea name="horario_base" class="form-control" rows="5"
+                    placeholder="Lunes: trabajo 9:00-13:00, universidad 18:00-21:00&#10;Martes: clases 8:00-12:00&#10;Miercoles: libre hasta las 14:00&#10;Jueves: trabajo 9:00-17:00&#10;Viernes: trabajo 9:00-17:00">{{ horario_usuario.horario_base }}</textarea>
+            </div>
+            <div>
+                <label class="form-label">Contexto adicional <span class="text-muted fw-normal">(opcional)</span></label>
+                <textarea name="contexto_horario" class="form-control" rows="2"
+                    placeholder="Ej: por la manana rindo mejor, despues de las 9pm ya no avanzo">{{ horario_usuario.contexto_horario or '' }}</textarea>
+            </div>
+            <div class="d-flex justify-content-end gap-2">
+                <a href="{{ url_for('plan') }}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-stars me-1"></i>Ver Plan IA
+                </a>
+                <button type="submit" class="btn btn-primary btn-sm px-4">
+                    <i class="bi bi-save me-1"></i>Guardar horario
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+{# ── Modal nueva tarea ── #}
+<dialog class="app-dialog" id="modalNuevaTarea" aria-labelledby="modalNuevaTareaLabel">
+    <div class="p-4">
+        <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+            <div>
+                <div class="section-kicker mb-1">Captura Rapida</div>
+                <h5 class="mb-0" id="modalNuevaTareaLabel">Nueva Tarea</h5>
+            </div>
+            <button type="button" class="btn btn-outline-secondary btn-sm" id="cerrarNuevaTarea">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <form method="POST" action="{{ url_for('nueva_tarea', estado=filtro_activo) }}">
+            {% set tarea = tarea_modal %}
+            {% set accion = 'Crear' %}
+            {% include "_tarea_form_fields.html" %}
+            <div class="d-flex gap-2 justify-content-end mt-3">
+                <button type="button" class="btn btn-outline-secondary" id="cancelarNuevaTarea">Cancelar</button>
+                <button type="submit" class="btn btn-primary px-4">
+                    <i class="bi bi-save me-1"></i>Crear Tarea
+                </button>
+            </div>
+        </form>
+    </div>
+</dialog>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+<script>
+// Buscador en tiempo real
+document.getElementById('buscadorTareas')?.addEventListener('input', function() {
+    const q = this.value.toLowerCase().trim();
+    document.querySelectorAll('.task-row').forEach(function(row) {
+        const titulo = row.querySelector('.task-title')?.textContent.toLowerCase() || '';
+        row.style.display = (!q || titulo.includes(q)) ? '' : 'none';
+    });
+});
+
+// Drag & drop para reordenar tareas
+const taskList = document.querySelector('.task-list');
+if (taskList) {
+    Sortable.create(taskList, {
+        handle: '.drag-handle',
+        animation: 150,
+        ghostClass: 'drag-ghost',
+        onEnd: function() {
+            const ids = [...taskList.querySelectorAll('.task-row')].map(r => parseInt(r.dataset.id));
+            fetch('{{ url_for("reordenar_tareas") }}', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ids})
+            });
+        }
+    });
+}
+</script>
+<script>
+    const dialogNuevaTarea = document.getElementById('modalNuevaTarea');
+
+    function abrirModal() {
+        if (!dialogNuevaTarea) return;
+        if (typeof dialogNuevaTarea.showModal === 'function') dialogNuevaTarea.showModal();
+        else window.location.href = "{{ url_for('nueva_tarea', fallback=1) }}";
+    }
+
+    function cerrarModal() {
+        if (dialogNuevaTarea?.open) dialogNuevaTarea.close();
+    }
+
+    document.getElementById('abrirNuevaTarea')?.addEventListener('click', abrirModal);
+    document.getElementById('abrirNuevaTareaVacio')?.addEventListener('click', abrirModal);
+    document.getElementById('cerrarNuevaTarea')?.addEventListener('click', cerrarModal);
+    document.getElementById('cancelarNuevaTarea')?.addEventListener('click', cerrarModal);
+
+    {% if mostrar_modal_nueva %}
+    window.addEventListener('load', abrirModal);
+    {% endif %}
+
+</script>
+{% endblock %}

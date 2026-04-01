@@ -1,0 +1,38 @@
+<div class="mb-3">
+    <label class="form-label fw-semibold">Titulo <span class="text-danger">*</span></label>
+    <input type="text" name="titulo" class="form-control" value="{{ tarea.titulo }}" required maxlength="200" autofocus />
+</div>
+<div class="mb-3">
+    <label class="form-label fw-semibold">Descripcion</label>
+    <textarea name="descripcion" class="form-control" rows="3" placeholder="Detalles, contexto o entregables">{{ tarea.descripcion or '' }}</textarea>
+</div>
+<div class="row g-3 mb-3">
+    <div class="col-md-4">
+        <label class="form-label fw-semibold">Prioridad</label>
+        <select name="prioridad" class="form-select">
+            {% for nivel in ['baja', 'media', 'alta'] %}
+            <option value="{{ nivel }}" {% if tarea.prioridad == nivel %}selected{% endif %}>{{ nivel|capitalize }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-4">
+        <label class="form-label fw-semibold">Categoria</label>
+        <select name="categoria_id" class="form-select">
+            <option value="">Sin categoria</option>
+            {% for cat in categorias %}
+            <option value="{{ cat.id }}" {% if tarea.categoria_id == cat.id %}selected{% endif %}>{{ cat.nombre }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-4">
+        <label class="form-label fw-semibold">Fecha limite</label>
+        <input type="date" name="fecha_limite" class="form-control"
+               value="{{ tarea.fecha_limite.strftime('%Y-%m-%d') if tarea.fecha_limite else '' }}" />
+    </div>
+</div>
+{% if accion == 'Editar' %}
+<div class="mb-3 form-check">
+    <input type="checkbox" name="completada" id="completada" class="form-check-input" {% if tarea.completada %}checked{% endif %} />
+    <label for="completada" class="form-check-label">Marcar como completada</label>
+</div>
+{% endif %}

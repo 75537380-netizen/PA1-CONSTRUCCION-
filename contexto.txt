@@ -1,0 +1,55 @@
+Evaluación para el consolidado 1
+Producto Académico N° 1 
+Actividad Grupal
+1.	Consideraciones:
+
+Nombre de la Actividad Evaluativa: “Desarrollo Ágil de Aplicación con Inteligencia Artificial Generativa”
+Descripción de la Actividad:
+•	Los estudiantes conformarán equipos de 3 a 5 integrantes para desarrollar una aplicación sencilla en un entorno ágil. 
+•	Deberán aplicar al menos una iteración de metodologías ágiles, utilizar inteligencia artificial generativa en el desarrollo de código, implementar manejo de excepciones, aplicar principios de código limpio y realizar buenas prácticas de estilo de código y refactorización. 
+•	La entrega final incluirá una aplicación funcional y un informe técnico detallado.
+Indicaciones para el Desarrollo:
+1.	Formar equipos de 3 a 5 integrantes y definir un líder de equipo.
+2.	Seleccionar un problema sencillo que requiera una solución mediante una aplicación de software.
+3.	Planificar el desarrollo utilizando una metodología ágil (Scrum, Kanban u otra similar) e implementar al menos una iteración con entregables funcionales.
+4.	Integrar herramientas de inteligencia artificial generativa para la generación de código y justificar su uso.
+5.	Implementar un sistema de manejo de excepciones que asegure la robustez de la aplicación.
+6.	Aplicar principios de código limpio para mejorar la mantenibilidad del software.
+7.	Seguir buenas prácticas en estilo de código y refactorización para optimizar la legibilidad y eficiencia.
+8.	Entregar una aplicación funcional junto con un informe técnico que incluya:
+o	Descripción del problema y la solución propuesta.
+o	Justificación del uso de metodologías ágiles.
+o	Explicación del uso de inteligencia artificial generativa en el desarrollo.
+o	Detalles sobre la implementación del manejo de excepciones.
+o	Análisis de código limpio, estilo y refactorización.
+
+Recursos de Aprendizaje Obligatorios:
+•	Documentación sobre metodologías ágiles (Scrum, Kanban, XP, etc.).
+•	Material sobre uso de inteligencia artificial generativa en programación.
+•	Guía de mejores prácticas de código limpio y refactorización (Robert C. Martin, "Clean Code").
+•	Referencias sobre manejo de excepciones en distintos lenguajes de programación.
+PLANTEAMIENTO Y DESCRIPCIÓN DETALLADA DE LA ACTIVIDAD:
+•	Los estudiantes trabajarán en equipos de 3 a 5 integrantes para desarrollar una aplicación sencilla en un entorno ágil. 
+•	En la primera fase, deberán definir el problema a resolver y planificar su desarrollo con al menos una iteración aplicando metodologías ágiles.
+•	Durante la implementación, deberán utilizar herramientas de inteligencia artificial generativa para la generación de código o automatización de tareas, documentando su impacto en el desarrollo.
+•	Para garantizar la robustez del software, se requiere que implementen un sistema adecuado de manejo de excepciones. 
+•	Además, el código debe cumplir con principios de código limpio, asegurando modularidad, claridad y reutilización. 
+•	Se evaluará también el mantenimiento de un estilo de código consistente y la aplicación de refactorización cuando sea necesario.
+Cada equipo deberá presentar:
+1.	La aplicación funcional, alojada en un repositorio de control de versiones.
+2.	Un informe técnico en el que expliquen cómo se aplicaron los principios evaluados en el desarrollo.
+3.	Un video corto (máximo 5 minutos) explicando la funcionalidad de la aplicación y cómo se incorporaron las buenas prácticas.
+2.	Rúbrica de evaluación:
+A continuación, se presenta la escala de valoración, con base a la cual se evaluará.
+Criterios	Sobresaliente
+(5 puntos)	Suficiente
+(3 puntos)	En proceso
+(1 puntos)	En inicio
+(0 puntos)
+Desarrollo de la aplicación utilizando prácticas ágiles	Implementan correctamente al menos una iteración ágil con entregables funcionales y documentados.	Aplican prácticas ágiles, pero con iteraciones incompletas o poco documentadas.	Utilizan algunas prácticas ágiles sin evidencia clara de iteraciones.	No aplican metodologías ágiles en el desarrollo.
+Uso de IA generativa para la generación de código	Integran herramientas de IA para generar código eficiente y justifican su uso en el desarrollo.	Utilizan IA en el desarrollo, pero sin justificar su impacto en el código generado.	Aplican IA de manera mínima o sin demostrar su utilidad.	No emplean IA generativa en la creación de código.
+Manejo de excepciones para robustez de la aplicación	Implementan estrategias de manejo de excepciones de manera eficiente, mejorando la estabilidad del software.	Incluyen manejo de excepciones, pero con casos limitados o sin impacto significativo.	Aplican manejo de excepciones, pero sin una estrategia clara.	No implementan ningún mecanismo de manejo de excepciones.
+Código limpio y principios de mantenibilidad	Aplican principios de código limpio, asegurando modularidad, claridad y reutilización del código.	Siguen algunos principios de código limpio, pero con inconsistencias en su aplicación.	Presentan código funcional, pero con problemas de mantenibilidad y organización.	No aplican ningún principio de código limpio en el desarrollo.
+Buenas prácticas en estilo de código y refactorización	Mantienen un estilo de código consistente y realizan refactorización para mejorar la eficiencia.	Siguen parcialmente un estilo de código adecuado, con poca refactorización.	Presentan un código desorganizado con problemas de estilo y sin refactorización.	No aplican buenas prácticas en estilo de código ni realizan refactorización.
+Total parcial				
+Nota	Promedio = (Nota parcial x 20)/25

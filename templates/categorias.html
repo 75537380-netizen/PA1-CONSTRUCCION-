@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block titulo %}Categorias{% endblock %}
+{% block contenido %}
+<div class="main-surface">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <div class="section-kicker mb-1">Organizacion</div>
+            <h2 class="mb-0">Mis Categorias</h2>
+        </div>
+    </div>
+
+    {# ── Formulario nueva categoria ── #}
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h6 class="mb-3" style="color:var(--text-soft);font-weight:600;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.1em;">Nueva Categoria</h6>
+            <form method="POST" action="{{ url_for('nueva_categoria') }}" class="row g-3 align-items-end">
+                <div class="col-sm-6">
+                    <label class="form-label">Nombre</label>
+                    <input type="text" name="nombre" class="form-control" placeholder="Ej: Trabajo, Universidad, Personal…" required maxlength="100" autofocus />
+                </div>
+                <div class="col-sm-3">
+                    <label class="form-label">Color</label>
+                    <input type="color" name="color" class="form-control form-control-color w-100" value="#56c2ff" style="height:42px;border-radius:12px;" />
+                </div>
+                <div class="col-sm-3">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-plus-lg me-1"></i>Agregar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {# ── Lista de categorias ── #}
+    {% if categorias %}
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        {% for cat in categorias %}
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body d-flex align-items-center gap-3 p-3">
+                    <span class="rounded-circle flex-shrink-0"
+                          style="width:32px;height:32px;background:{{ cat.color }}22;border:2px solid {{ cat.color }};display:inline-block;"></span>
+                    <span class="fw-semibold flex-grow-1" style="font-size:0.9rem;">{{ cat.nombre }}</span>
+                    <form method="POST" action="{{ url_for('eliminar_categoria', categoria_id=cat.id) }}"
+                          onsubmit="return confirm('Eliminar {{ cat.nombre }}?')">
+                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="card border-dashed text-center py-5">
+        <div class="card-body">
+            <i class="bi bi-tags display-3 d-block mb-3 text-muted opacity-50"></i>
+            <p class="text-muted mb-3">Aun no tienes categorias. Crea una para organizar tus tareas.</p>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}
