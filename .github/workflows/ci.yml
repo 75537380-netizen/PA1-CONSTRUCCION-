@@ -1,0 +1,39 @@
+name: CI - Organizador AI
+
+on:
+  push:
+    branches: ["main", "master", "feature/**"]
+  pull_request:
+    branches: ["main", "master"]
+
+jobs:
+  verificar:
+    name: Verificar proyecto
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Obtener codigo del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt
+
+      - name: Verificar sintaxis de los modulos principales
+        run: |
+          python -m py_compile app.py
+          python -m py_compile database.py
+          python -m py_compile models.py
+          echo "Todos los archivos pasaron la verificacion de sintaxis."
+
+      - name: Confirmar que Flask puede cargar la aplicacion
+        env:
+          FLASK_APP: app.py
+          FLASK_ENV: testing
+          SECRET_KEY: ci-test-key
+        run: python -c "from app import app; print('Aplicacion cargada correctamente:', app.name)"
