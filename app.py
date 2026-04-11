@@ -12,6 +12,7 @@ from typing import Optional
 import anthropic
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
+from urllib.parse import urlparse
 from fpdf import FPDF
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from mysql.connector import Error as MySQLError
@@ -96,12 +97,22 @@ def login():
     if request.method == "POST":
         nombre = request.form.get("nombre_usuario", "").strip()
         contrasena = request.form.get("contrasena", "").strip()
+        recordarme = request.form.get("recordarme") == "1"
+
+        if not nombre or not contrasena:
+            flash("Completa todos los campos para iniciar sesion.", "warning")
+            return render_template("login.html")
 
         try:
             usuario = db.obtener_usuario_por_nombre(nombre)
             if usuario and check_password_hash(usuario.contrasena_hash, contrasena):
-                login_user(usuario)
+                login_user(usuario, remember=recordarme)
                 flash(f"Bienvenido, {usuario.nombre_usuario}!", "success")
+
+                # Redirigir al destino original si es seguro (mismo dominio)
+                next_page = request.form.get("next", "").strip()
+                if next_page and urlparse(next_page).netloc == "":
+                    return redirect(next_page)
                 return redirect(url_for("index"))
             else:
                 flash("Nombre de usuario o contrasena incorrectos.", "danger")
